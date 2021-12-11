@@ -101,9 +101,10 @@ function* getMatches(file, regExp, captureGroup = 1) {
 /**
  * Extracts translation keys from methods such as `$t` and `$tc`.
  *
- * - **regexp pattern**: (?:[$ .]tc?)\(
+ * - **regexp pattern**: (?:[$\s.:"'`+\(\[\{]t[cm]?)\(
  *
- *   **description**: Matches the sequence t( or tc(, optionally with either “$”, “.” or “ ” in front of it.
+ *   **description**: Matches the sequence t(, tc( or tm(, optionally with either “$”, SPACE, “.”, “:”, “"”, “'”,
+ *   “`”, "+", "(", "[" or "{" in front of it.
  *
  * - **regexp pattern**: (["'`])
  *
@@ -124,7 +125,7 @@ function* getMatches(file, regExp, captureGroup = 1) {
 
 
 function extractMethodMatches(file) {
-  const methodRegExp = /(?:[$ ."'`]t[cm]?)\(\s*?(["'`])((?:[^\\]|\\.)*?)\1/g;
+  const methodRegExp = /(?:[$\s.:"'`+\(\[\{]t[cm]?)\(\s*?(["'`])((?:[^\\]|\\.)*?)\1/g;
   return [...getMatches(file, methodRegExp, 2)];
 }
 
@@ -209,7 +210,7 @@ function writeMissingToLanguageFiles(parsedLanguageFiles, missingKeys, dot = Dot
     const languageFileContent = JSON.parse(languageFile.content);
     missingKeys.forEach(item => {
       if (item.language && languageFile.fileName.includes(item.language) || !item.language) {
-        dot.str(item.path, '', languageFileContent);
+        dot.str(item.path, item.path, languageFileContent);
       }
     });
     writeLanguageFile(languageFile, languageFileContent);
