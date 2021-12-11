@@ -66,7 +66,7 @@ export function writeMissingToLanguageFiles (parsedLanguageFiles: SimpleFile[], 
 
     missingKeys.forEach(item => {
       if (item.language && languageFile.fileName.includes(item.language) || !item.language) {
-        dot.str(item.path, '', languageFileContent);
+        dot.str(item.path, item.path, languageFileContent);
       }
     });
 
